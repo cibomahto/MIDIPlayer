@@ -19,8 +19,16 @@ void MIDIPlayer::StopTimer() {
   TIMSK2 &= ~(1<<TOIE2);  
 }
 
-MIDIEvent& MIDIPlayer::getCurrentEvent() {
-  return this->song->events[eventIndex];
+void MIDIPlayer::getCurrentEvent(MIDIEvent& currentEvent) {
+  currentEvent.time = pgm_read_dword(&song->events[eventIndex].time);
+  currentEvent.type = (kMIDIType)pgm_read_byte(&song->events[eventIndex].type);
+  currentEvent.pitch = pgm_read_byte(&song->events[eventIndex].pitch);
+  currentEvent.velocity = pgm_read_byte(&song->events[eventIndex].velocity);
+
+//  currentEvent.time = song->events[eventIndex].time;
+//  currentEvent.type = song->events[eventIndex].type;
+//  currentEvent.pitch = song->events[eventIndex].pitch;
+//  currentEvent.velocity = song->events[eventIndex].velocity;
 }
 
 void MIDIPlayer::Play(MIDISong& song) {
@@ -29,27 +37,27 @@ void MIDIPlayer::Play(MIDISong& song) {
   startTime = millis();
   eventIndex = 0;
 
-//  StartTimer();
-
   unsigned long songTime;
+  MIDIEvent currentEvent;
+  
+  getCurrentEvent(currentEvent);
   
   while (eventIndex < this->song->lengthNotes) {
     songTime = millis() - startTime;
-    
-    if (getCurrentEvent().time < songTime) {
+       
+    if (currentEvent.time < songTime) {
       // Run the event!
-      switch (getCurrentEvent().type) {
+      switch (currentEvent.type) {
         case NoteOn:
-          digitalWrite(13,HIGH);
-          MIDI.sendNoteOn(getCurrentEvent().pitch, getCurrentEvent().velocity, MIDI_CHANNEL);
+          MIDI.sendNoteOn(currentEvent.pitch, currentEvent.velocity, MIDI_CHANNEL);
           break;
         case NoteOff:
-          digitalWrite(13,LOW);
-          MIDI.sendNoteOff(getCurrentEvent().pitch, getCurrentEvent().velocity, MIDI_CHANNEL);
+          MIDI.sendNoteOff(currentEvent.pitch, currentEvent.velocity, MIDI_CHANNEL);
           break;
         // TODO: Support other kinds of things here?
       }
       eventIndex++;
+      getCurrentEvent(currentEvent);
     }
   }
   
@@ -63,18 +71,19 @@ void MIDIPlayer::Stop() {
   StopTimer();
 }
 
-uint8_t LEDState = 0;
-uint8_t LED = 13;
-
-ISR(TIMER2_OVF_vect)
-{
-  if (LEDState == 0) {
-//    digitalWrite(LED,HIGH);
-    LEDState = 1;
-  }
-  else {
-//    digitalWrite(LED,LOW);
-    LEDState = 0;
-  }
-}
+// TODO: It might be nice to offload this to a background thread?
+//uint8_t LEDState = 0;
+//uint8_t LED = 13;
+//
+//ISR(TIMER2_OVF_vect)
+//{
+//  if (LEDState == 0) {
+////    digitalWrite(LED,HIGH);
+//    LEDState = 1;
+//  }
+//  else {
+////    digitalWrite(LED,LOW);
+//    LEDState = 0;
+//  }
+//}
 

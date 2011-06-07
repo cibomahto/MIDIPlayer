@@ -6,6 +6,7 @@
 #define MIDIPLAYER_H
 
 #include <MIDI.h>
+#include <avr/pgmspace.h>
 
 struct MIDIEvent {
   unsigned long time;
@@ -16,7 +17,7 @@ struct MIDIEvent {
 
 
 struct MIDISong {
-  MIDIEvent* events;
+  MIDIEvent* events;            // assumed to be in program space (define as PROGMEM)
   uint16_t lengthNotes;
   unsigned long lengthMillis;
 };
@@ -27,7 +28,7 @@ private:
   unsigned long startTime;
   uint16_t eventIndex;
   
-  MIDIEvent& getCurrentEvent();
+  void getCurrentEvent(MIDIEvent& currentEvent);
   void StartTimer();
   void StopTimer();
 public:
