@@ -1,0 +1,29 @@
+#######################################
+# Syntax Coloring Map For Test
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MIDIPlayer.h	KEYWORD1
+MIDIPlayer	KEYWORD1
+MIDIEvent	KEYWORD1
+MIDISong	KEYWORD1
+Player		KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Play		KEYWORD2
+Stop		KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
