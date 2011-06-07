@@ -1,0 +1,20 @@
+This project designed to work along side Francois Best's MIDI Library:
+http://www.arduino.cc/playground/Main/MIDILibrary
+
+Setup:
+
+Download the MIDI Library mentioned above, and place both it and this folder in your libraries folder. Then, try running the example program :-).
+
+Note that the MIDI library comes configured by default to output a MIDI mode called 'USE_RUNNING_STATUS'. If the example program doesn't produce valid output, then open MIDI.h and change the line:
+#define USE_RUNNING_STATUS		1
+to:
+#define USE_RUNNING_STATUS		0
+
+
+Known Issues/Bugs:
+The converter script seems to get the timing information wrong. I'm looking into it, but in the meantime you can modify MIDIPlayer.c to multiply the time by different amounts. An alternative might be to specifiy a time multiplier when starting playback.
+
+The library is envisioned to be driven by an interrupt (so that other processing can go on in the foreground), however this hasn't been implemented yet. Help would be appreciated!
+
+All code snippets I wrote are public domain, code from others should be used as marked.
+
